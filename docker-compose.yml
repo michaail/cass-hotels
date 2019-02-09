@@ -1,0 +1,38 @@
+version: '2'
+
+services:
+  cassandra-seed:
+    container_name: cassandra-seed-node
+    image: cassandra:2.2.8
+    ports:
+      - "9042:9042"   # Native transport
+      - "7199:7199"   # JMX
+      - "9160:9160"   # Thrift clients
+    # mem_limit: 1500m
+
+  cassandra-node-1:
+    image: cassandra:2.2.8
+    command: /bin/bash -c "echo 'Waiting for seed node' && sleep 60 && /docker-entrypoint.sh cassandra -f"
+    environment:
+      - "CASSANDRA_SEEDS=cassandra-seed-node"
+    depends_on:
+      - "cassandra-seed"
+    # mem_limit: 1500m
+
+  cassandra-node-2:
+    image: cassandra:2.2.8
+    command: /bin/bash -c "echo 'Waiting for seed node' && sleep 120 && /docker-entrypoint.sh cassandra -f"
+    environment:
+      - "CASSANDRA_SEEDS=cassandra-seed-node"
+    depends_on:
+      - "cassandra-seed"
+    # mem_limit: 1500m
+
+  # cassandra-node-3:
+  #   image: cassandra:2.2.8
+  #   command: /bin/bash -c "echo 'Waiting for seed node' && sleep 140 && /docker-entrypoint.sh cassandra -f"
+  #   environment:
+  #     - "CASSANDRA_SEEDS=cassandra-seed-node"
+  #   depends_on:
+  #     - "cassandra-seed"
+  #   # mem_limit: 2gb
