@@ -1,0 +1,14 @@
+{
+  "ProjectFilePath": "/home/klos/studia/2sem/srds/srds-cassandra/srds-cassandra.csproj",
+  "TargetFramework": "netcoreapp2.2",
+  "TagHelpers": [],
+  "Configuration": {
+    "ConfigurationName": "UnsupportedRazor",
+    "LanguageVersion": "1.0",
+    "Extensions": [
+      {
+        "ExtensionName": "UnsupportedRazorExtension"
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+/home/klos/studia/2sem/srds/srds-cassandra/bin/Debug/netcoreapp2.2/srds-cassandra.deps.json
+/home/klos/studia/2sem/srds/srds-cassandra/bin/Debug/netcoreapp2.2/srds-cassandra.runtimeconfig.json
+/home/klos/studia/2sem/srds/srds-cassandra/bin/Debug/netcoreapp2.2/srds-cassandra.runtimeconfig.dev.json
+/home/klos/studia/2sem/srds/srds-cassandra/bin/Debug/netcoreapp2.2/srds-cassandra.dll
+/home/klos/studia/2sem/srds/srds-cassandra/bin/Debug/netcoreapp2.2/srds-cassandra.pdb
+/home/klos/studia/2sem/srds/srds-cassandra/obj/Debug/netcoreapp2.2/srds-cassandra.csprojAssemblyReference.cache
+/home/klos/studia/2sem/srds/srds-cassandra/obj/Debug/netcoreapp2.2/srds-cassandra.csproj.CoreCompileInputs.cache
+/home/klos/studia/2sem/srds/srds-cassandra/obj/Debug/netcoreapp2.2/srds-cassandra.AssemblyInfoInputs.cache
+/home/klos/studia/2sem/srds/srds-cassandra/obj/Debug/netcoreapp2.2/srds-cassandra.AssemblyInfo.cs
+/home/klos/studia/2sem/srds/srds-cassandra/obj/Debug/netcoreapp2.2/srds-cassandra.dll
+/home/klos/studia/2sem/srds/srds-cassandra/obj/Debug/netcoreapp2.2/srds-cassandra.pdb
