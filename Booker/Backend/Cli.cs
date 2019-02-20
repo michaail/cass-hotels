@@ -43,8 +43,12 @@ namespace srds_cassandra.Backend
                         case "help":
                             showHelp();
                             break;
+                        case "clr":
+                            deleteAll();
+                            break;
                         case "exit":
                             Console.WriteLine("exitting");
+                            deleteAll();
                             runnable = false;
                             break;
                         default:
@@ -126,21 +130,21 @@ namespace srds_cassandra.Backend
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        private void runClient()
+        private void runClient(int offset, int roomCount)
         {
+            // Console.WriteLine("Reserving from {0} to {1}", offset, offset + roomCount -1);
             String client = generateUser();
             int booked = 0;
-            for (int i= 0; i < 3; i++)
+            for (int i= 0; i < roomCount; i++)
             {
-                int roomCount = new Random().Next(6) + 1;
-                if (backend.bookRooms(90210, client, roomCount))
+                
+                if (backend.bookSpecificRoom(90210, client, offset + i))
                 {
-                    booked += roomCount;
-                    
+                    booked += 1;
                 }
                 else
                 {
-                    
+                    Console.WriteLine("Couldn't book hotel");
                 }
             }
 
@@ -154,27 +158,40 @@ namespace srds_cassandra.Backend
 
         private void createStressEnv()
         {
-            backend.addHotel(90210, "stressHotel", 10000);
+            backend.addHotel(90210, "stressHotel", 3000);
+        }
+
+        public void deleteAll()
+        {
+            backend.deleteAll();
         }
 
         public void stressTest()
         {
+            int offset = 0;
+            // int roomCount = 0;
             try
             {
                 createStressEnv();
+                
                 List<Thread> threads = new List<Thread>();
                 for (int i = 0; i < 1000; i++)
                 {
+                    var offset_ = offset;
+                    var roomCount = new Random().Next(5) + 1;
+                    
                     Thread t = new Thread(() => {
+                        
                         try
                         {
-                            runClient();
+                            runClient(offset_, roomCount);
                         }
                         catch (System.Exception)
                         {
                             throw;
                         }
                     });
+                    offset += roomCount;
                     threads.Add(t);
                     t.Start();
                 }
@@ -183,6 +200,7 @@ namespace srds_cassandra.Backend
                 {
                     th.Join();
                 }
+                Console.WriteLine("finnished stress test");
             }
             catch (Exception e)
             {
@@ -190,7 +208,7 @@ namespace srds_cassandra.Backend
             }
             finally
             {
-                backend.deleteAll();
+                // backend.deleteAll();
             }
         }
 

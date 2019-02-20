@@ -143,10 +143,33 @@ namespace srds_cassandra.Backend
         }
 
 
+        public bool bookSpecificRoom(int hotelId, string client, int roomId)
+        {
+            BoundStatement bs = DELETE_FROM_FREEROOMS.Bind(hotelId, roomId);
+            try
+            {
+                session.Execute(bs);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            bs = INSERT_INTO_BOOKEDROOMS.Bind(hotelId, roomId, client);
+            try
+            {
+                session.Execute(bs);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            return true;
+        }
+
         public bool bookRooms(int hotelId, string client, int count)
         {
             BoundStatement bs = SELECT_FROM_FREEROOMS_BY_HOTEL.Bind(hotelId);
-            RowSet result;
+            RowSet result = null;
 
             try
             {
@@ -154,7 +177,7 @@ namespace srds_cassandra.Backend
             }
             catch (Exception e)
             {
-                throw e;
+                Console.WriteLine(e.Message);
             }
 
             Hotel hotel = new Hotel();
@@ -276,12 +299,12 @@ namespace srds_cassandra.Backend
         {
 		    BoundStatement bs = SELECT_FROM_BOOKEDROOMS_BY_CLIENT.Bind(hotelId, client);
 		    
-		    RowSet rs;
+		    RowSet rs = null;
             List<int> result = new List<int>();
             try {
                 rs = session.Execute(bs);
             } catch(Exception e) {
-                throw e;
+                Console.WriteLine(e.Message);
             }
             
             foreach (Row row in rs)
