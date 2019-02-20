@@ -301,9 +301,12 @@ namespace srds_cassandra.Backend
 		    
 		    RowSet rs = null;
             List<int> result = new List<int>();
-            try {
+            try 
+            {
                 rs = session.Execute(bs);
-            } catch(Exception e) {
+            } 
+            catch(Exception e) 
+            {
                 Console.WriteLine(e.Message);
             }
             
@@ -315,59 +318,77 @@ namespace srds_cassandra.Backend
             return result;
 	    }
 
-	public List<int> getAllHotels()
-    {
-        BoundStatement bs = new BoundStatement(SELECT_FROM_HOTELS);
-        RowSet rs = null;
-        
-        List<int> result = new List<int>();
-        try {
-            rs = session.Execute(bs);
-        } catch(Exception e) {
-            throw e;
-        }
-
-        foreach (Row row in rs)
+	    public List<int> getAllHotels()
         {
-            result.Add((int)row.GetValue(typeof(int), "id"));
-        }
+            BoundStatement bs = new BoundStatement(SELECT_FROM_HOTELS);
+            RowSet rs = null;
+        
+            List<int> result = new List<int>();
+            try 
+            {
+            rs = session.Execute(bs);
+            } 
+            catch (Exception e) 
+            {
+                throw e;
+            }
 
-        return result;
-    }
+            foreach (Row row in rs)
+            {
+                result.Add((int)row.GetValue(typeof(int), "id"));
+            }
+
+            return result;
+        }
     
-    public void deleteAll() {
-		BoundStatement bs = new BoundStatement(DELETE_ALL_FREEROOMS);
-		RowSet rs = null;
+        public void deleteAll() 
+        {
+		    BoundStatement bs = new BoundStatement(DELETE_ALL_FREEROOMS);
+		    RowSet rs = null;
 		
-        try {
-            rs = session.Execute(bs);
-        } catch(Exception e) {
-            throw e;
-        }
+            try 
+            {
+                rs = session.Execute(bs);
+            } 
+            catch(Exception e) 
+            {
+                throw e;
+            }
 
-		bs = new BoundStatement(DELETE_ALL_HOTELS);
-		try {
-            rs = session.Execute(bs);
-        } catch(Exception e) {
-            throw e;
-        }
+		    bs = new BoundStatement(DELETE_ALL_HOTELS);
+		    try 
+            {
+                rs = session.Execute(bs);
+            } 
+            catch(Exception e) 
+            {
+                throw e;
+            }
 
-		bs = new BoundStatement(DELETE_ALL_BOOKEDROOMS);
-		try {
-            rs = session.Execute(bs);
-        } catch(Exception e) {
-            throw e;
-        }
-	}
+		    bs = new BoundStatement(DELETE_ALL_BOOKEDROOMS);
+		    try 
+            {
+                rs = session.Execute(bs);
+            } 
+            catch (Exception e) 
+            {
+                throw e;
+            }
+	    }
 
-	private void finalize() {
-		try {
-			if (session != null) {
-				session.Cluster.Shutdown();
-			}
-		} catch (Exception e) {
-			Console.WriteLine("Could not close existing cluster");
-		}
-	}
+	    private void finalize() 
+        {
+		    try 
+            {
+			    if (session != null) 
+                {
+				    session.Cluster.Shutdown();
+			    }
+		    } 
+            catch (Exception e) 
+            {
+			    Console.WriteLine("Could not close existing cluster: {0}", e.Message);
+		    }
+	    }
     }
 }
