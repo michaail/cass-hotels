@@ -174,8 +174,10 @@ namespace srds_cassandra.Backend
             {
                 createStressEnv();
                 
+                var watch = System.Diagnostics.Stopwatch.StartNew();
                 List<Thread> threads = new List<Thread>();
-                for (int i = 0; i < 1000; i++)
+                int threadsCount = 1000;
+                for (int i = 0; i < threadsCount; i++)
                 {
                     var offset_ = offset;
                     var roomCount = new Random().Next(5) + 1;
@@ -200,7 +202,10 @@ namespace srds_cassandra.Backend
                 {
                     th.Join();
                 }
+                watch.Stop();
+                var elapsedMs = watch.ElapsedMilliseconds;
                 Console.WriteLine("finnished stress test");
+                Console.WriteLine("done {0} writes and {1} reads in {2}ms", offset, threadsCount, elapsedMs);
             }
             catch (Exception e)
             {

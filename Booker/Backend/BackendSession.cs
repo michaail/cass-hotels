@@ -10,6 +10,7 @@ namespace srds_cassandra.Backend
     public class BackendSession
     {
         private static PreparedStatement SELECT_FROM_FREEROOMS_BY_HOTEL;
+        private static PreparedStatement SELECT_FROM_FREEROOMS_BY_HOTEL_AND_ROOM;
 	    private static PreparedStatement INSERT_INTO_FREEROOMS;
 	    private static PreparedStatement DELETE_FROM_FREEROOMS;
 
@@ -52,6 +53,9 @@ namespace srds_cassandra.Backend
             {
                 SELECT_FROM_FREEROOMS_BY_HOTEL = session.Prepare(
                     "SELECT * FROM freeRooms WHERE hotelId = ? ;"
+                );
+                SELECT_FROM_FREEROOMS_BY_HOTEL_AND_ROOM = session.Prepare(
+                    "SELECT * FROM freeRooms WHERE hotelId = ? AND roomId = ?"
                 );
                 INSERT_INTO_FREEROOMS = session.Prepare(
                     "INSERT INTO freeRooms (hotelId, roomId) VALUES (?, ?);"
@@ -145,13 +149,29 @@ namespace srds_cassandra.Backend
 
         public bool bookSpecificRoom(int hotelId, string client, int roomId)
         {
-            BoundStatement bs = DELETE_FROM_FREEROOMS.Bind(hotelId, roomId);
+            BoundStatement bs = SELECT_FROM_FREEROOMS_BY_HOTEL_AND_ROOM.Bind(hotelId, roomId);
+            RowSet result = null;
+            try // check if room available
+            {
+                result = session.Execute(bs);
+            }
+            catch (System.Exception)
+            {   
+                return false;
+            }
+            if (result.GetAvailableWithoutFetching() == 0)
+            {
+                return false;
+            }
+
+            bs = DELETE_FROM_FREEROOMS.Bind(hotelId, roomId);
             try
             {
                 session.Execute(bs);
             }
             catch (Exception e)
             {
+                Console.WriteLine("error");
                 throw e;
             }
             bs = INSERT_INTO_BOOKEDROOMS.Bind(hotelId, roomId, client);
@@ -170,7 +190,6 @@ namespace srds_cassandra.Backend
         {
             BoundStatement bs = SELECT_FROM_FREEROOMS_BY_HOTEL.Bind(hotelId);
             RowSet result = null;
-
             try
             {
                 result = session.Execute(bs);   
@@ -199,7 +218,8 @@ namespace srds_cassandra.Backend
                 bs = DELETE_FROM_FREEROOMS.Bind(hotelId, room);
                 try
                 {
-                    session.Execute(bs);
+                    var re = session.Execute(bs);
+                    Console.WriteLine(re);
                 }
                 catch (Exception e)
                 {
@@ -283,7 +303,7 @@ namespace srds_cassandra.Backend
 
             for (int i = 0; i < rooms; i++)
             {
-                bs = INSERT_INTO_FREEROOMS.Bind(hotelId, i + 1);
+                bs = INSERT_INTO_FREEROOMS.Bind(hotelId, i);
                 try
                 {
                     session.Execute(bs);
